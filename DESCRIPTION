@@ -12,3 +12,5 @@ RoxygenNote: 7.2.3
 Imports: 
     here,
     readxl
+URL: https://github.com/andieich/Logger
+BugReports: https://github.com/andieich/Logger/issues
