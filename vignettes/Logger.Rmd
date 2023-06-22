@@ -1,0 +1,19 @@
+---
+title: "Logger"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Logger}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Logger)
+```

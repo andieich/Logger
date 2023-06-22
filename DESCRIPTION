@@ -14,3 +14,7 @@ Imports:
     readxl
 URL: https://github.com/andieich/Logger
 BugReports: https://github.com/andieich/Logger/issues
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
