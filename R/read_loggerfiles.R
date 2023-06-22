@@ -1,13 +1,17 @@
 #' Read and combine logger csv files
 #'
-#' @param loggerinfo
-#' @param folder
-#' @param check_SN
+#' @param loggerinfo The name of the `dataframe`containing the logger metadata
+#' @param folder The path to the folder containing the logger `.csv` files. The default is `data/raw_csv`
+#' @param check_SN logical: Should the serial number (SN) provided in the metadata dataframe be checked against the SN stored in the logger `.csv` files? The default is `TRUE`.
 #'
-#' @return
+#' @return A `dataframe` in "long" format containing all the logger data. Additional information, as SN, filename, logger type, etc, is added
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' dat_logger <- read_loggerfiles(loggerinfo)
+#' }
+#'
 read_loggerfiles <- function(loggerinfo,
                              folder = "data/raw_csv",
                              check_SN = TRUE){
