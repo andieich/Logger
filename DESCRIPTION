@@ -11,7 +11,10 @@ LazyData: true
 RoxygenNote: 7.2.3
 Imports: 
     here,
-    readxl
+    magrittr,
+    readxl,
+    rlang,
+    utils
 URL: https://github.com/andieich/Logger
 BugReports: https://github.com/andieich/Logger/issues
 Suggests: 

@@ -17,7 +17,7 @@ read_loggerfiles(loggerinfo, folder = "data/raw_csv", check_SN = TRUE)
 A `dataframe` in "long" format containing all the logger data. Additional information, as SN, filename, logger type, etc, is added
 }
 \description{
-Read and combine logger csv files
+Uses the info provided in `loggerinfo` to read and merge all logger csv files.
 }
 \examples{
 \dontrun{

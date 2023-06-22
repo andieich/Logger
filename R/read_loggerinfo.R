@@ -1,5 +1,7 @@
 #' Read logger metadata
 #'
+#' This function is a wrapper for `readxl::read_excel` and imports the Excel table containing the logger metadata.
+#'
 #' @param path The path to the Excel file (`.xlsx`) containing the metadata for the logger deployments
 #' @param tab The tab in the Excel file containing the metadata for the logger deployments
 #'

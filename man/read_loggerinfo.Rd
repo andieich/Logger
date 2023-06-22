@@ -15,7 +15,7 @@ read_loggerinfo(path, tab = "retrieved")
 a `data.frame` with the logger metadata
 }
 \description{
-Read logger metadata
+This function is a wrapper for `readxl::read_excel` and imports the Excel table containing the logger metadata.
 }
 \examples{
 \dontrun{
