@@ -30,7 +30,7 @@ read_loggerfiles <- function(loggerinfo,
     rlang::abort(c(
       "The specified folder does not exist",
       "x" = paste("The folder ", folder, "was not found"),
-      "i" = paste("Make sure that the specified fodler exists or that you specify the folder if it is not the default (`data/raw_csv)")
+      "i" = paste("Make sure that the specified folder exists or that you specify the folder if it is not the default (`data/raw_csv)")
     ))
   }
 
