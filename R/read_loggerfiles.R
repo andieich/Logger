@@ -3,6 +3,7 @@
 #' Uses the info provided in `loggerinfo` to read and merge all logger csv files.
 #'
 #' @param loggerinfo The name of the `dataframe`containing the logger metadata
+#' @param add_info a character vector of column names in `loggerinfo`. The content of these columns will be added to the corresponding logger data
 #' @param folder The path to the folder containing the logger `.csv` files. The default is `data/raw_csv`
 #' @param check_SN logical: Should the serial number (SN) provided in the metadata dataframe be checked against the SN stored in the logger `.csv` files? The default is `TRUE`.
 #'
@@ -15,20 +16,105 @@
 #' }
 #'
 read_loggerfiles <- function(loggerinfo,
+                             add_info = c("SN",
+                                          "type",
+                                          "site",
+                                          "habitat",
+                                          "replicate"),
                              folder = "data/raw_csv",
                              check_SN = TRUE){
 
-  merged_data <- data.frame("date_time" = lubridate::as_datetime(NA),
-                            "temperature" = NA,
-                            "light_intensity" = NA,
-                            "SN" = NA,
-                            "type" = "NA",
-                            "site" = "NA",
-                            "habitat" = "NA",
-                            "replicate" = NA)[0,]
+  # check if folder exists:
+
+  if (!file.exists(folder)){
+    rlang::abort(c(
+      "The specified folder does not exist",
+      "x" = paste("The folder ", folder, "was not found"),
+      "i" = paste("Make sure that the specified fodler exists or that you specify the folder if it is not the default (`data/raw_csv)")
+    ))
+  }
+
+  # check if all files exist
+
+  path_to_file <- paste(folder, loggerinfo$filename, sep = "/")
+
+  if (any(!file.exists(path_to_file))){
+
+    missing_files <- loggerinfo$filename[which(!file.exists(path_to_file))]
+    row_missing_files <- which(!file.exists(path_to_file))
+
+    rlang::abort(c(
+      "A file from the filename column in loggerinfo does not exist",
+      "x" = paste("The file ", missing_files, "does not exist"),
+      "i" = paste("Make sure that all files from the filename column of loggerinfo exists in the folder with the csv files")
+    ))
+  }
+
+
+  # if check_SN is TRUE, check if it's numeric and not NA
+
+  if (check_SN) {
+
+    #does the column exist?
+
+    if (!"SN" %in% names(loggerinfo)){
+      rlang::abort(c(
+        "The column SN does not exist in loggerinfo",
+        "i" = "Either add the SN column or set check_SN = FALSE"
+      ))
+    }
+
+    # are there NA values?
+
+    if (any(is.na(loggerinfo$SN))){
+
+      row_with_NA <- which(is.na(loggerinfo$SN))
+
+      rlang::abort(c(
+        "NA values in SN column of loggerinfo",
+        "x" = paste("In row", row_with_NA, "a NA value was detected"),
+        "i" = "Make sure that all cells in the SN column are filled out"
+      ))
+    }
+
+    # all SN integer?
+
+    if (any(!is.numeric(loggerinfo$SN))){
+
+      row_SN_no_integer <- which(!is.numeric(loggerinfo$SN))
+
+      rlang::abort(c(
+        "SN values contain not only numbers",
+        "i" = "Make sure that all cells in the SN column are filled out correctly"
+      ))
+    }
+
+  }
+
+
+  # check if all add_info columns exist in loggerinfo
+
+  if (any(!add_info %in% names(loggerinfo))) {
+
+    missing_cols <-  add_info[which(!add_info %in% names(loggerinfo))]
+
+    rlang::abort(c(
+      "One or more nedded columns missing in loggerinfo.",
+      "x" = paste(missing_cols, " was selected in `add_info` but is missing in the loggerinfo file."),
+      "i" = paste("Make sure that", missing_cols, "exists in loggerinfo or remove it from `add_info`.")
+    ))
+
+  }
+
+  #add `filename` as unique ID for a logger deployment
+
+  add_info <- c(add_info, "filename")
 
   for (row_i in seq_along(rownames(loggerinfo))){
-    data <- utils::read.csv(here::here(folder, loggerinfo$filename[row_i]))
+
+    filename <- loggerinfo$filename[row_i]
+
+    data <- utils::read.csv(here::here(folder, filename))
     SN <- Logger::get_SN(data)
     names <- Logger::clean_colnames(data, row_i)
 
@@ -41,24 +127,42 @@ read_loggerfiles <- function(loggerinfo,
                   loggerinfo$SN[row_i], ") is different than the SN in the csv data (", SN ,")" ))
     }
 
-
-
+    nrow_before <- nrow(data)
     # filter data with infos provided in loggerinfo
     data <- data %>%
-      mutate(date_time = lubridate::as_datetime(date_time)) %>%
-      filter(date_time >= lubridate::as_datetime(loggerinfo$deployed[row_i])) %>%
-      filter(date_time <= lubridate::as_datetime(loggerinfo$retrieved[row_i]))
+      dplyr::mutate(date_time = lubridate::as_datetime(date_time)) %>%
+      dplyr::filter(date_time >= lubridate::as_datetime(loggerinfo$deployed[row_i])) %>%
+      dplyr::filter(date_time <= lubridate::as_datetime(loggerinfo$retrieved[row_i]))
 
-    data$SN <- SN
-    data$type <- loggerinfo$type[row_i]
-    data$site <- loggerinfo$site[row_i]
-    data$habitat <- loggerinfo$habitat[row_i]
-    data$replicate <- loggerinfo$replicate[row_i]
+    nrow_after <- nrow(data)
+
+    nrow_removed <- nrow_before - nrow_after
+
+    perc_removed <- round(100 * nrow_removed / nrow_before,1)
+
+    # add infos from loggerinfo to data based on selection in add_info
+
+    add_info_filled <- loggerinfo[row_i,] %>%
+      dplyr::select(dplyr::all_of(add_info))
+
+    data <- data %>%
+      dplyr::bind_cols(add_info_filled)
 
 
-    merged_data <- add_row(merged_data, data)
+    if (!exists("merged_data")){
 
-    print(paste("Successfully read line", row_i ,"of loggerinfo"))
+      merged_data <- data
+
+    } else {
+
+      merged_data <- dplyr::bind_rows(merged_data, data)
+
+    }
+
+    rlang::inform(c("i" = filename,
+                    "*" = paste0("removed ", nrow_removed, " of ", nrow_before, " rows (", perc_removed, "%)"),
+                    "v" = paste("Read", row_i, "of", nrow(loggerinfo),"files."),
+                    ""))
 
   }
   return(merged_data)

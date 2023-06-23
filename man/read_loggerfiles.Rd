@@ -4,10 +4,17 @@
 \alias{read_loggerfiles}
 \title{Read and combine logger csv files}
 \usage{
-read_loggerfiles(loggerinfo, folder = "data/raw_csv", check_SN = TRUE)
+read_loggerfiles(
+  loggerinfo,
+  add_info = c("SN", "type", "site", "habitat", "replicate"),
+  folder = "data/raw_csv",
+  check_SN = TRUE
+)
 }
 \arguments{
 \item{loggerinfo}{The name of the `dataframe`containing the logger metadata}
+
+\item{add_info}{a character vector of column names in `loggerinfo`. The content of these columns will be added to the corresponding logger data}
 
 \item{folder}{The path to the folder containing the logger `.csv` files. The default is `data/raw_csv`}
 
