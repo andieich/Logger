@@ -85,7 +85,23 @@ read_loggerinfo <- function(path, tab = "retrieved"){
 }
 
 
-# helper function to check if a `column` of a `data`frame is formatted as POSIXct
+#
+#' Checks for datetime columns
+#'
+#' Helper function to check if a `column` of a `data`frame is formatted as POSIXct
+#'
+#' @param data The dataframe in which the datetime columns will be checked
+#' @param column The name of the datetime column
+#'
+#' @return Returns a `rlang::abort()` message in case the datetime values are not correctly formatted
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' check_datetime_cols(loggerinfo, "retrieved")
+#' }
+#'
+
 check_datetime_cols <- function(data, column){
 
   values <- data[[column]]
@@ -103,7 +119,23 @@ check_datetime_cols <- function(data, column){
 }
 
 
-# helper function to check if a `column` of a `data`frame contains NA values
+
+#' Check NA in columns
+#'
+#' Helper function to check if a `column` of a `data`frame contains NA values
+#'
+#' @param data The dataframe in which for specified columns will be checked if NA values occur
+#' @param column The column that should be checked
+#'
+#' @return Returns a `rlang::abort()` message in case NA values occur in the selected column
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' check_NA_cols(loggerinfo, "retrieved")
+#' }
+#'
+
 check_NA_cols <- function(data, column){
 
   values <- data[[column]]
