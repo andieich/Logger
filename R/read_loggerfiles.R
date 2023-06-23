@@ -159,6 +159,16 @@ read_loggerfiles <- function(loggerinfo,
 
     }
 
+    # remove "light_intensity" column if only NA values occur
+    if (all(is.na(merged_data$light_intensity))){
+
+      merged_data <- merged_data %>%
+        dplyr::select(!light_intensity)
+
+    }
+
+
+
     rlang::inform(c("i" = filename,
                     "*" = paste0("removed ", nrow_removed, " of ", nrow_before, " rows (", perc_removed, "%)"),
                     "v" = paste("Read", row_i, "of", nrow(loggerinfo),"files."),
