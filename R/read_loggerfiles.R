@@ -3,7 +3,7 @@
 #' Uses the info provided in `loggerinfo` to read and merge all logger csv files.
 #'
 #' @param loggerinfo The name of the `dataframe`containing the logger metadata
-#' @param add_info a character vector of column names in `loggerinfo`. The content of these columns will be added to the corresponding logger data
+#' @param add_info a character vector of column names in `loggerinfo`. The content of these columns will be added to the corresponding logger data. As default, SN, type, site, and depth is chosen.
 #' @param folder The path to the folder containing the logger `.csv` files. The default is `data/raw_csv`
 #' @param check_SN logical: Should the serial number (SN) provided in the metadata dataframe be checked against the SN stored in the logger `.csv` files? The default is `TRUE`.
 #'
@@ -21,8 +21,7 @@ read_loggerfiles <- function(loggerinfo,
                              add_info = c("SN",
                                           "type",
                                           "site",
-                                          "habitat",
-                                          "replicate"),
+                                          "depth"),
                              folder = "data/raw_csv",
                              check_SN = TRUE){
 
