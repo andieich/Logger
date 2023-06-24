@@ -3,7 +3,7 @@
 #' This function is a wrapper for `readxl::read_excel` and imports the Excel table containing the logger metadata.
 #'
 #' @param path The path to the Excel file (`.xlsx`) containing the metadata for the logger deployments
-#' @param tab The tab in the Excel file containing the metadata for the logger deployments
+#' @param sheet The tab in the Excel file containing the metadata for the logger deployments. If not specified, the first sheet is used.
 #'
 #' @return a `data.frame` with the logger metadata
 #' @export
@@ -13,9 +13,15 @@
 #' loggerinfo <- read_loggerinfo(here::here("data/logger_info.xlsx"))
 #' }
 #'
-read_loggerinfo <- function(path, tab = "retrieved"){
-  loggerinfo <- readxl::read_excel(path,
-                                   sheet = "retrieved")
+read_loggerinfo <- function(path, sheet = NA){
+
+  if (!is.na(sheet)){
+    loggerinfo <- readxl::read_excel(path,
+                                     sheet = sheet)
+  } else {
+    loggerinfo <- readxl::read_excel(path)
+  }
+
 
   # some checks:
 
@@ -27,7 +33,7 @@ read_loggerinfo <- function(path, tab = "retrieved"){
 
   if (any(!needed_cols %in% col_names)) {
 
-    missing_cols <-  needed_cols[which(!needed_cols %in% col_names)]
+    missing_cols <-  needed_cols[which(!needed_cols %in% test)]
 
     rlang::abort(c(
       "One or more nedded columns missing in loggerinfo.",
