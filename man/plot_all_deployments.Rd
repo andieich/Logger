@@ -2,16 +2,16 @@
 % Please edit documentation in R/plot_all_deployments.R
 \name{plot_all_deployments}
 \alias{plot_all_deployments}
-\title{Plot logger deployemnts}
+\title{Plot logger deployments}
 \usage{
 plot_all_deployments(loggerdata, parameter = "temperature", y_lab = "auto")
 }
 \arguments{
 \item{loggerdata}{The `loggerdata` dataframe}
 
-\item{parameter}{The parameter that should be plotted. The default is `temperature`, currenlty supported is also `light_intensity`.}
+\item{parameter}{The parameter that should be plotted. The default is `temperature`, currently supported is also `light_intensity`.}
 
-\item{y_lab}{The y_lab that should be used in the plots. The default is `auto` wich sets the righ label for temperature and light_intensity. A character string can be specified if you want to use your own label.}
+\item{y_lab}{The y_lab that should be used in the plots. The default is `auto` which sets the right label for temperature and light_intensity. A character string can be specified if you want to use your own label.}
 }
 \value{
 prints a plot for each logger deployment.
@@ -20,8 +20,9 @@ prints a plot for each logger deployment.
 This function plots all logger runs in `loggerdata` separately so you can check if there is any problem in the data.
 }
 \examples{
-#' \dontrun{
+\dontrun{
 plot_all_deployments <- plot_all_deployments(loggerdata)
 }
+
 
 }

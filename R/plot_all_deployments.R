@@ -1,18 +1,21 @@
-#' Plot logger deployemnts
+#' Plot logger deployments
 #'
 #' This function plots all logger runs in `loggerdata` separately so you can check if there is any problem in the data.
 #'
 #' @param loggerdata The `loggerdata` dataframe
-#' @param parameter The parameter that should be plotted. The default is `temperature`, currenlty supported is also `light_intensity`.
-#' @param y_lab The y_lab that should be used in the plots. The default is `auto` wich sets the righ label for temperature and light_intensity. A character string can be specified if you want to use your own label.
+#' @param parameter The parameter that should be plotted. The default is `temperature`, currently supported is also `light_intensity`.
+#' @param y_lab The y_lab that should be used in the plots. The default is `auto` which sets the right label for temperature and light_intensity. A character string can be specified if you want to use your own label.
 #'
 #' @return prints a plot for each logger deployment.
 #' @export
+#' @importFrom rlang :=
+#' @importFrom rlang .data
 #'
 #' @examples
-#' #' \dontrun{
+#' \dontrun{
 #' plot_all_deployments <- plot_all_deployments(loggerdata)
 #' }
+#'
 #'
 plot_all_deployments <- function(loggerdata,
                                  parameter = "temperature",
@@ -32,7 +35,7 @@ plot_all_deployments <- function(loggerdata,
 
   filenames <- loggerdata %>%
     dplyr::filter(!is.na(!!enq_parameter)) %>%
-    dplyr::pull(filename) %>%
+    dplyr::pull(.data$filename) %>%
     unique()
 
   if (y_lab == "auto"){
@@ -61,8 +64,8 @@ plot_all_deployments <- function(loggerdata,
 
 
     plot <- loggerdata %>%
-      dplyr::filter(filename == filename_i) %>%
-      ggplot2::ggplot(ggplot2::aes(x = date_time, y = !!enq_parameter))+
+      dplyr::filter(.data$filename == filename_i) %>%
+      ggplot2::ggplot(ggplot2::aes(x = .data$date_time, y = !!enq_parameter))+
       ggplot2::geom_line()+
       ggplot2::scale_x_datetime(date_labels = "%d.%m.%y")+
       ggplot2::labs(x = NULL, y = y_lab, title = filename_i)+

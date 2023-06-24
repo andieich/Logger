@@ -9,6 +9,8 @@
 #'
 #' @return A `dataframe` in "long" format containing all the logger data. Additional information, as SN, filename, logger type, etc, is added
 #' @export
+#' @importFrom rlang :=
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -130,9 +132,9 @@ read_loggerfiles <- function(loggerinfo,
     nrow_before <- nrow(data)
     # filter data with infos provided in loggerinfo
     data <- data %>%
-      dplyr::mutate(date_time = lubridate::as_datetime(date_time)) %>%
-      dplyr::filter(date_time >= lubridate::as_datetime(loggerinfo$deployed[row_i])) %>%
-      dplyr::filter(date_time <= lubridate::as_datetime(loggerinfo$retrieved[row_i]))
+      dplyr::mutate(date_time = lubridate::as_datetime(.data$date_time)) %>%
+      dplyr::filter(.data$date_time >= lubridate::as_datetime(loggerinfo$deployed[row_i])) %>%
+      dplyr::filter(.data$date_time <= lubridate::as_datetime(loggerinfo$retrieved[row_i]))
 
     nrow_after <- nrow(data)
 
@@ -163,7 +165,7 @@ read_loggerfiles <- function(loggerinfo,
     if (all(is.na(merged_data$light_intensity))){
 
       merged_data <- merged_data %>%
-        dplyr::select(!light_intensity)
+        dplyr::select(!.data$light_intensity)
 
     }
 

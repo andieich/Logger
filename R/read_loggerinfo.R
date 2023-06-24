@@ -27,7 +27,7 @@ read_loggerinfo <- function(path, tab = "retrieved"){
 
   if (any(!needed_cols %in% col_names)) {
 
-    missing_cols <-  needed_cols[which(!needed_cols %in% test)]
+    missing_cols <-  needed_cols[which(!needed_cols %in% col_names)]
 
     rlang::abort(c(
       "One or more nedded columns missing in loggerinfo.",
