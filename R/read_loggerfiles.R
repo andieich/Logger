@@ -128,7 +128,31 @@ read_loggerfiles <- function(loggerinfo,
                   loggerinfo$SN[row_i], ") is different than the SN in the csv data (", SN ,")" ))
     }
 
+
+    #check if deployed and retrieved in data
+
+    if (min(lubridate::as_datetime(data$date_time), na.rm = T) > lubridate::as_datetime(loggerinfo$deployed[row_i])){
+      rlang::inform(c(
+        paste("The time of deployment does not exists in the logger data"),
+        "i" = "Double check that the dates are filled out correctly"
+      ))
+    }
+
+    if (max(lubridate::as_datetime(data$date_time), na.rm = T) < lubridate::as_datetime(loggerinfo$retrieved[row_i])){
+      rlang::inform(c(
+        paste("The time of retrival does not exists in the logger data"),
+        "i" = "Double check that the dates are filled out correctly"
+      ))
+    }
+
+
+
+
+
+
     nrow_before <- nrow(data)
+
+
     # filter data with infos provided in loggerinfo
     data <- data %>%
       dplyr::mutate(date_time = lubridate::as_datetime(.data$date_time)) %>%
@@ -140,6 +164,8 @@ read_loggerfiles <- function(loggerinfo,
     nrow_removed <- nrow_before - nrow_after
 
     perc_removed <- round(100 * nrow_removed / nrow_before,1)
+
+
 
     # add infos from loggerinfo to data based on selection in add_info
 
