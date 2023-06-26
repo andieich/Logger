@@ -117,12 +117,10 @@ read_loggerfiles <- function(loggerinfo,
 
     data <- utils::read.csv(here::here(folder, filename))
 
-    # delete unneccessary columns:
     to_delete <- c("Host","Coupler", "Stopped", "File")
 
     data <- data %>%
-      dplyr::select(.data,contains(to_delete))
-
+      dplyr::select(!contains(to_delete))
 
     SN <- Logger::get_SN(data)
     names <- Logger::clean_colnames(data, row_i)
