@@ -192,13 +192,13 @@ read_loggerfiles <- function(loggerinfo,
 
     }
 
-    # remove "light_intensity" column if only NA values occur
-    if (all(is.na(merged_data$light_intensity))){
-
-      merged_data <- merged_data %>%
-        dplyr::select(!.data$light_intensity)
-
-    }
+    # # remove "light_intensity" column if only NA values occur
+    # if (all(is.na(merged_data$light_intensity))){
+    #
+    #   merged_data <- merged_data %>%
+    #     dplyr::select(!.data$light_intensity)
+    #
+    # }
 
 
 
