@@ -46,7 +46,7 @@ read_loggerfiles <- function(loggerinfo,
 
     rlang::abort(c(
       "A file from the filename column in loggerinfo does not exist",
-      "x" = paste("In line",row_missing_files, "the filename", missing_files, "does not exist"),
+      "x" = paste("In line",row_missing_files, ", the filename", missing_files, "does not exist"),
       "i" = paste("Make sure that all files from the filename column of loggerinfo exists in the folder with the csv files")
     ))
   }
