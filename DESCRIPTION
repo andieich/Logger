@@ -1,7 +1,7 @@
 Package: Logger
 Type: Package
 Title: A package that helps to import, clean, and visualize logger data
-Version: 0.1.0
+Version: 0.1.1
 Author: Andreas Eich
 Maintainer: Andreas Eich <eich.andreas@web.de>
 Description: The package was made for Hobo Loggers. Supported are currently the following models:Water Temperature V2 and Pendant Loggers (temperature and/or light intensity).
