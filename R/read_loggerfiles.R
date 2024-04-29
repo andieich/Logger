@@ -79,16 +79,16 @@ read_loggerfiles <- function(loggerinfo,
     }
 
     # all SN integer?
-
-    if (any(!is.numeric(loggerinfo$SN))){
-
-      row_SN_no_integer <- which(!is.numeric(loggerinfo$SN))
-
-      rlang::abort(c(
-        "SN values contain not only numbers",
-        "i" = "Make sure that all cells in the SN column are filled out correctly"
-      ))
-    }
+#
+#     if (any(!is.numeric(loggerinfo$SN))){
+#
+#       row_SN_no_integer <- which(!is.numeric(loggerinfo$SN))
+#
+#       rlang::abort(c(
+#         "SN values contain not only numbers",
+#         "i" = "Make sure that all cells in the SN column are filled out correctly"
+#       ))
+#     }
 
   }
 
