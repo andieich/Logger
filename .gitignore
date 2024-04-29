@@ -6,3 +6,5 @@
 .Rdata
 .httr-oauth
 inst/doc
+.DS_Store
+.quarto
