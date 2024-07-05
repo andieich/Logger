@@ -124,8 +124,9 @@ read_loggerfiles <- function(loggerinfo,
       data <- utils::read.csv(here::here(folder, filename), skip = 20)
 
       data <- data %>%
-        mutate(time = with_tz(ymd_hms(time), tzone = Sys.timezone())) %>%
-        rename(date_time = time, temperature = temp)
+        mutate(time = with_tz(ymd_hms(time), tzone = Sys.timezone())) %>%#convert from UTC to local
+        rename(date_time = time, temperature = temp) %>%
+        mutate(date_time = force_tz(date_time, tzone = "UTC"))# consider converted times at UTC to keep it similar to all other dates
 
       SN_raw <- readLines("/Users/andi/Documents/PhD/stats/Logger_analysis/data/raw_csv/2024_07_04_E2B_shallow_2.csv")[10]
 
@@ -139,7 +140,6 @@ read_loggerfiles <- function(loggerinfo,
         "i" = paste("Check in line", row_i, "of the loggerinfo file.")
       ))
     }
-
 
     #check if SN in loggerinfo is the same as in csv
 
@@ -158,7 +158,7 @@ read_loggerfiles <- function(loggerinfo,
       ))
     }
 
-    if (max(lubridate::as_datetime(data$date_time), na.rm = T) < lubridate::as_datetime(loggerinfo$retrieved[row_i])){
+    if (max(lubridate::as_datetime(data$date_time),na.rm = T) < lubridate::as_datetime(loggerinfo$retrieved[row_i])){
       rlang::inform(c(
         paste("The time of retrival does not exists in the logger data"),
         "i" = "Double check that the dates are filled out correctly"
