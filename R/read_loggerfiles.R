@@ -52,7 +52,7 @@ read_loggerfiles <- function(loggerinfo,
   }
 
 
-  # if check_SN is TRUE, check if it's numeric and not NA
+  # if check_SN is TRUE
 
   if (check_SN) {
 
@@ -77,18 +77,6 @@ read_loggerfiles <- function(loggerinfo,
         "i" = "Make sure that all cells in the SN column are filled out"
       ))
     }
-
-    # all SN integer?
-#
-#     if (any(!is.numeric(loggerinfo$SN))){
-#
-#       row_SN_no_integer <- which(!is.numeric(loggerinfo$SN))
-#
-#       rlang::abort(c(
-#         "SN values contain not only numbers",
-#         "i" = "Make sure that all cells in the SN column are filled out correctly"
-#       ))
-#     }
 
   }
 
@@ -115,17 +103,45 @@ read_loggerfiles <- function(loggerinfo,
 
     filename <- loggerinfo$filename[row_i]
 
-    data <- utils::read.csv(here::here(folder, filename))
+    if (loggerinfo$type[row_i] %in% c("Pro", "Pendant")){
 
-    to_delete <- c("Host","Coupler", "Stopped", "File")
+      #read Hobo
+      data <- utils::read.csv(here::here(folder, filename))
 
-    data <- data %>%
-      dplyr::select(!contains(to_delete))
+      to_delete <- c("Host","Coupler", "Stopped", "File")
 
-    SN <- Logger::get_SN(data)
-    names <- Logger::clean_colnames(data, row_i)
+      data <- data %>%
+        dplyr::select(!contains(to_delete))
 
-    names(data) <- names
+      SN <- Logger::get_SN(data)
+      names <- Logger::clean_colnames(data, row_i)
+
+      names(data) <- names
+
+      rlang::inform("Hobo")
+
+    } else if (loggerinfo$type[row_i] == "Electricblue"){
+      rlang::inform("EB")
+
+      data <- utils::read.csv(here::here(folder, filename), skip = 20)
+
+      data <- data %>%
+        mutate(time = with_tz(ymd_hms(time), tzone = Sys.timezone())) %>%
+        rename(date_time = time, temperature = temp)
+
+      SN_raw <- readLines("/Users/andi/Documents/PhD/stats/Logger_analysis/data/raw_csv/2024_07_04_E2B_shallow_2.csv")[10]
+
+      SN <- gsub(".*, ","",SN_raw) %>%
+        gsub(" ", "", .)
+
+    } else {
+      rlang::abort(c(
+        "Loggertype not known.",
+        "x" = paste("Loggertype is:", loggerinfo$type[row_i], "but only Pro, Pendant, and Electricblue are supported"),
+        "i" = paste("Check in line", row_i, "of the loggerinfo file.")
+      ))
+    }
+
 
     #check if SN in loggerinfo is the same as in csv
 
@@ -150,10 +166,6 @@ read_loggerfiles <- function(loggerinfo,
         "i" = "Double check that the dates are filled out correctly"
       ))
     }
-
-
-
-
 
 
     nrow_before <- nrow(data)
