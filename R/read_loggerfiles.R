@@ -118,10 +118,8 @@ read_loggerfiles <- function(loggerinfo,
 
       names(data) <- names
 
-      rlang::inform("Hobo")
 
     } else if (loggerinfo$type[row_i] == "Electricblue"){
-      rlang::inform("EB")
 
       data <- utils::read.csv(here::here(folder, filename), skip = 20)
 
